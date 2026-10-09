@@ -2,148 +2,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Golden Stainless Steel Charcoal Stove</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Golden Stainless Steel Charcoal Stove</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f2eb;
+  color: #222;
+  text-align: center;
+  margin: 0;
+  padding: 30px 15px;
+}
+.container {
+  max-width: 800px;
+  margin: auto;
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+}
+h1 {
+  font-size: 28px;
+  margin-bottom: 25px;
+}
+.product-image {
+  display: block;
+  max-width: 100%;
+  max-height: 350px;
+  object-fit: contain;
+  margin: 0 auto 25px;
+}
+.barcode-box {
+  overflow-x: auto;
+  padding: 15px;
+  background: white;
+}
+#barcode {
+  display: block;
+  margin: auto;
+}
+button {
+  padding: 12px 18px;
+  margin: 10px 5px;
+  cursor: pointer;
+  border: 0;
+  border-radius: 6px;
+  background: #b58a36;
+  color: white;
+  font-weight: bold;
+}
+</style>
 </head>
-<body style="font-family:Arial;text-align:center;padding:30px">
+<body>
+<main class="container">
+  <h1>Golden Stainless Steel Charcoal Stove</h1>
 
-  <svg id="barcode" xmlns="http://www.w3.org/2000/svg"
-       role="img" aria-label="Code 128 barcode"
-       style="width:100%;max-width:650px;height:auto"></svg>
+  <img
+    class="product-image"
+    src="charcole%20stove.jpg"
+    alt="Golden Stainless Steel Charcoal Stove"
+    onerror="this.style.display='none';"
+  >
 
-  <br><br>
-  <button onclick="downloadBarcode('png')">Download PNG</button>
-  <button onclick="downloadBarcode('svg')">Download SVG</button>
+  <div class="barcode-box">
+    <svg id="barcode"
+         xmlns="http://www.w3.org/2000/svg"
+         role="img"
+         aria-label="Code 128 barcode">
+    </svg>
+  </div>
 
-  <script>
-    const productName = "Golden Stainless Steel Charcoal Stove";
+  <button onclick="downloadBarcode('png')">
+    Download Barcode PNG
+  </button>
+  <button onclick="downloadBarcode('svg')">
+    Download Barcode SVG
+  </button>
+</main>
 
-    // Code 128 patterns, values 0–106
-    const patterns = [
-      "212222","222122","222221","121223","121322","131222",
-      "122213","122312","132212","221213","221312","231212",
-      "112232","122132","122231","113222","123122","123221",
-      "223211","221132","221231","213212","223112","312131",
-      "311222","321122","321221","312212","322112","322211",
-      "212123","212321","232121","111323","131123","131321",
-      "112313","132113","132311","211313","231113","231311",
-      "112133","112331","132131","113123","113321","133121",
-      "313121","211331","231131","213113","213311","213131",
-      "311123","311321","331121","312113","312311","332111",
-      "314111","221411","431111","111224","111422","121124",
-      "121421","141122","141221","112214","112412","122114",
-      "122411","142112","142211","241211","221114","413111",
-      "241112","134111","111242","121142","121241","114212",
-      "124112","124211","411212","421112","421211","212141",
-      "214121","412121","111143","111341","131141","114113",
-      "114311","411113","411311","113141","114131","311141",
-      "411131","211412","211214","211232","2331112"
-    ];
+<script>
+(() => {
+  const patterns = [
+    '212222','222122','222221','121223','121322','131222',
+    '122213','122312','132212','221213','221312','231212',
+    '112232','122132','122231','113222','123122','123221',
+    '223211','221132','221231','213212','223112','312131',
+    '311222','321122','321221','312212','322112','322211',
+    '212123','212321','232121','111323','131123','131321',
+    '112313','132113','132311','211313','231113','231311',
+    '112133','112331','132131','113123','113321','133121',
+    '313121','211331','231131','213113','213311','213131',
+    '311123','311321','331121','312113','312311','332111',
+    '314111','221411','431111','111224','111422','121124',
+    '121421','141122','141221','112214','112412','122114',
+    '122411','142112','142211','241211','221114','413111',
+    '241112','134111','111242','121142','121241','114212',
+    '124112','124211','411212','421112','421211','212141',
+    '214121','412121','111143','111341','131141','114113',
+    '114311','411113','411311','113141','114131','311141',
+    '411131','211412','211214','211232','2331112'
+  ];
 
-    // Code 128 Set B encodes printable ASCII characters.
-    const values = [...productName].map(c => c.charCodeAt(0) - 32);
-    const checksum = (104 + values.reduce(
-      (sum, value, i) => sum + value * (i + 1), 0
-    )) % 103;
+  // Barcode destination: your published GitHub Pages website.
+  const text = 'https://muletgtwo-jpg.github.io/GT-partners/';
+  const values = Array.from(text, ch => ch.charCodeAt(0) - 32);
+  const start = 104;
+  const checksum = (
+    start + values.reduce(
+      (sum, value, index) => sum + value * (index + 1), 0
+    )
+  ) % 103;
+  const symbols = [start, ...values, checksum, 106];
 
-    const symbols = [104, ...values, checksum, 106];
-    const moduleWidth = 2;
-    const quiet = 20;
-    const width = symbols.reduce((sum, v) =>
-      sum + [...patterns[v]].reduce((a, n) => a + Number(n), 0) * moduleWidth,
-      quiet * 2
+  const svg = document.getElementById('barcode');
+  const ns = 'http://www.w3.org/2000/svg';
+  const moduleWidth = 2;
+  const quiet = 20;
+  const barHeight = 90;
+  const height = 120;
+
+  const totalModules = symbols.reduce((sum, value) => {
+    return sum + patterns[value].split('').reduce(
+      (a, digit) => a + Number(digit), 0
     );
+  }, 0);
 
-    const svg = document.getElementById("barcode");
-    svg.setAttribute("viewBox", `0 0 ${width} 115`);
+  const width = totalModules * moduleWidth + quiet * 2;
+  svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+  svg.setAttribute('width', width);
+  svg.setAttribute('height', height);
 
-    const add = (tag, attrs) => {
-      const el = document.createElementNS(
-        "http://www.w3.org/2000/svg", tag
-      );
-      Object.entries(attrs).forEach(([k, v]) =>
-        el.setAttribute(k, v)
-      );
-      svg.appendChild(el);
-      return el;
+  const background = document.createElementNS(ns, 'rect');
+  background.setAttribute('width', width);
+  background.setAttribute('height', height);
+  background.setAttribute('fill', '#ffffff');
+  svg.appendChild(background);
+
+  let x = quiet;
+  let black = true;
+
+  for (const value of symbols) {
+    for (const digit of patterns[value]) {
+      const barWidth = Number(digit) * moduleWidth;
+
+      if (black) {
+        const rect = document.createElementNS(ns, 'rect');
+        rect.setAttribute('x', x);
+        rect.setAttribute('y', 5);
+        rect.setAttribute('width', barWidth);
+        rect.setAttribute('height', barHeight);
+        rect.setAttribute('fill', '#000000');
+        svg.appendChild(rect);
+      }
+
+      x += barWidth;
+      black = !black;
+    }
+  }
+
+  function downloadBarcode(format) {
+    const clone = svg.cloneNode(true);
+    clone.setAttribute('xmlns', ns);
+
+    const source = new XMLSerializer().serializeToString(clone);
+    const blob = new Blob([source], {
+      type: 'image/svg+xml;charset=utf-8'
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    if (format === 'svg') {
+      saveFile(url, 'golden_stainless_steel_charcoal_stove.svg');
+      return;
+    }
+
+    const img = new Image();
+
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = width * 4;
+      canvas.height = height * 4;
+
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      URL.revokeObjectURL(url);
+
+      canvas.toBlob(png => {
+        if (!png) return;
+
+        const pngUrl = URL.createObjectURL(png);
+        saveFile(
+          pngUrl,
+          'golden_stainless_steel_charcoal_stove.png'
+        );
+      }, 'image/png');
     };
 
-    add("rect", {
-      width, height: 115, fill: "white"
-    });
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      alert('Barcode export failed. Please try SVG instead.');
+    };
 
-    let x = quiet;
-    let black = true;
+    img.src = url;
+  }
 
-    symbols.forEach(value => {
-      [...patterns[value]].forEach(digit => {
-        const w = Number(digit) * moduleWidth;
-        if (black) {
-          add("rect", {
-            x, y: 5, width: w, height: 78, fill: "black"
-          });
-        }
-        x += w;
-        black = !black;
-      });
-    });
+  function saveFile(url, filename) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
 
-    const label = add("text", {
-      x: width / 2, y: 104,
-      "text-anchor": "middle",
-      "font-family": "Arial",
-      "font-size": 12,
-      fill: "black"
-    });
-    label.textContent = productName;
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
 
-    function downloadBarcode(format) {
-      const clone = svg.cloneNode(true);
-      clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-      const source = new XMLSerializer().serializeToString(clone);
-      let url, filename;
-
-      if (format === "svg") {
-        url = URL.createObjectURL(new Blob(
-          [source], { type: "image/svg+xml" }
-        ));
-        filename = "charcoal-stove-barcode.svg";
-        save(url, filename);
-      } else {
-        const image = new Image();
-        const svgUrl = URL.createObjectURL(new Blob(
-          [source], { type: "image/svg+xml" }
-        ));
-
-        image.onload = () => {
-          const canvas = document.createElement("canvas");
-          canvas.width = width * 3;
-          canvas.height = 345;
-          const ctx = canvas.getContext("2d");
-          ctx.fillStyle = "white";
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-          URL.revokeObjectURL(svgUrl);
-
-          canvas.toBlob(blob => {
-            const pngUrl = URL.createObjectURL(blob);
-            save(pngUrl, "charcoal-stove-barcode.png");
-          }, "image/png");
-        };
-
-        image.onerror = () => URL.revokeObjectURL(svgUrl);
-        image.src = svgUrl;
-      }
-    }
-
-    function save(url, filename) {
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }
-  </script>
+  window.downloadBarcode = downloadBarcode;
+})();
+</script>
 </body>
 </html>
