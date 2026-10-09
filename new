@@ -1,0 +1,29 @@
+
+# Install dependency:
+# pip install python-barcode pillow
+
+from barcode import Code128
+from barcode.writer import ImageWriter
+
+# Exact product name — no additional description
+product_name = "Golden Stainless Steel Charcoal Stove"
+
+# Generate a linear Code 128 barcode as a PNG image
+barcode = Code128(product_name, writer=ImageWriter())
+
+filename = "golden_stainless_steel_charcoal_stove_barcode"
+barcode.save(
+    filename,
+    options={
+        "format": "PNG",
+        "module_width": 0.3,
+        "module_height": 20.0,
+        "quiet_zone": 6.5,
+        "font_size": 10,
+        "text_distance": 3,
+        "write_text": True,
+    },
+)
+
+print("Barcode generated successfully.")
+print(f"File: {filename}.png")
