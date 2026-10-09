@@ -1,29 +1,149 @@
 
-# Install dependency:
-# pip install python-barcode pillow
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Golden Stainless Steel Charcoal Stove</title>
+</head>
+<body style="font-family:Arial;text-align:center;padding:30px">
 
-from barcode import Code128
-from barcode.writer import ImageWriter
+  <svg id="barcode" xmlns="http://www.w3.org/2000/svg"
+       role="img" aria-label="Code 128 barcode"
+       style="width:100%;max-width:650px;height:auto"></svg>
 
-# Exact product name — no additional description
-product_name = "Golden Stainless Steel Charcoal Stove"
+  <br><br>
+  <button onclick="downloadBarcode('png')">Download PNG</button>
+  <button onclick="downloadBarcode('svg')">Download SVG</button>
 
-# Generate a linear Code 128 barcode as a PNG image
-barcode = Code128(product_name, writer=ImageWriter())
+  <script>
+    const productName = "Golden Stainless Steel Charcoal Stove";
 
-filename = "golden_stainless_steel_charcoal_stove_barcode"
-barcode.save(
-    filename,
-    options={
-        "format": "PNG",
-        "module_width": 0.3,
-        "module_height": 20.0,
-        "quiet_zone": 6.5,
-        "font_size": 10,
-        "text_distance": 3,
-        "write_text": True,
-    },
-)
+    // Code 128 patterns, values 0–106
+    const patterns = [
+      "212222","222122","222221","121223","121322","131222",
+      "122213","122312","132212","221213","221312","231212",
+      "112232","122132","122231","113222","123122","123221",
+      "223211","221132","221231","213212","223112","312131",
+      "311222","321122","321221","312212","322112","322211",
+      "212123","212321","232121","111323","131123","131321",
+      "112313","132113","132311","211313","231113","231311",
+      "112133","112331","132131","113123","113321","133121",
+      "313121","211331","231131","213113","213311","213131",
+      "311123","311321","331121","312113","312311","332111",
+      "314111","221411","431111","111224","111422","121124",
+      "121421","141122","141221","112214","112412","122114",
+      "122411","142112","142211","241211","221114","413111",
+      "241112","134111","111242","121142","121241","114212",
+      "124112","124211","411212","421112","421211","212141",
+      "214121","412121","111143","111341","131141","114113",
+      "114311","411113","411311","113141","114131","311141",
+      "411131","211412","211214","211232","2331112"
+    ];
 
-print("Barcode generated successfully.")
-print(f"File: {filename}.png")
+    // Code 128 Set B encodes printable ASCII characters.
+    const values = [...productName].map(c => c.charCodeAt(0) - 32);
+    const checksum = (104 + values.reduce(
+      (sum, value, i) => sum + value * (i + 1), 0
+    )) % 103;
+
+    const symbols = [104, ...values, checksum, 106];
+    const moduleWidth = 2;
+    const quiet = 20;
+    const width = symbols.reduce((sum, v) =>
+      sum + [...patterns[v]].reduce((a, n) => a + Number(n), 0) * moduleWidth,
+      quiet * 2
+    );
+
+    const svg = document.getElementById("barcode");
+    svg.setAttribute("viewBox", `0 0 ${width} 115`);
+
+    const add = (tag, attrs) => {
+      const el = document.createElementNS(
+        "http://www.w3.org/2000/svg", tag
+      );
+      Object.entries(attrs).forEach(([k, v]) =>
+        el.setAttribute(k, v)
+      );
+      svg.appendChild(el);
+      return el;
+    };
+
+    add("rect", {
+      width, height: 115, fill: "white"
+    });
+
+    let x = quiet;
+    let black = true;
+
+    symbols.forEach(value => {
+      [...patterns[value]].forEach(digit => {
+        const w = Number(digit) * moduleWidth;
+        if (black) {
+          add("rect", {
+            x, y: 5, width: w, height: 78, fill: "black"
+          });
+        }
+        x += w;
+        black = !black;
+      });
+    });
+
+    const label = add("text", {
+      x: width / 2, y: 104,
+      "text-anchor": "middle",
+      "font-family": "Arial",
+      "font-size": 12,
+      fill: "black"
+    });
+    label.textContent = productName;
+
+    function downloadBarcode(format) {
+      const clone = svg.cloneNode(true);
+      clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      const source = new XMLSerializer().serializeToString(clone);
+      let url, filename;
+
+      if (format === "svg") {
+        url = URL.createObjectURL(new Blob(
+          [source], { type: "image/svg+xml" }
+        ));
+        filename = "charcoal-stove-barcode.svg";
+        save(url, filename);
+      } else {
+        const image = new Image();
+        const svgUrl = URL.createObjectURL(new Blob(
+          [source], { type: "image/svg+xml" }
+        ));
+
+        image.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = width * 3;
+          canvas.height = 345;
+          const ctx = canvas.getContext("2d");
+          ctx.fillStyle = "white";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+          URL.revokeObjectURL(svgUrl);
+
+          canvas.toBlob(blob => {
+            const pngUrl = URL.createObjectURL(blob);
+            save(pngUrl, "charcoal-stove-barcode.png");
+          }, "image/png");
+        };
+
+        image.onerror = () => URL.revokeObjectURL(svgUrl);
+        image.src = svgUrl;
+      }
+    }
+
+    function save(url, filename) {
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+  </script>
+</body>
+</html>
